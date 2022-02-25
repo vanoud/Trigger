@@ -2,39 +2,44 @@
 
 Trigger est une application permettant de faciliter la rencontre de personnes souhaitant débattre des idées opposées.
 
-Equipe : Florent, Marco, Piero, Thomas, Wallid
+Equipe : Florent, Marco, Piero, Thomas, Wallid.
 
 Trigger est un projet réalisé dans le cadre de la formation Admin Production Cloud dispensée par m2i Formation & Semifir.
 
 ## Pour installer le projet
 
-* Cloner le repos
- 
-    git clone https://github.com/vanoud/Trigger.git
+* Cloner le dépôt :
+```
+git clone https://github.com/vanoud/Trigger.git
+```
 
 * Depuis le répertoire du projet, créer un environnement virtuel :
-
-    py -3 -m venv venv
+```
+py -3 -m venv venv
+```
 
 * Activer l'environnement virtuel nouvellement créé :
-
-    venv\Scripts\activate
+```
+venv\Scripts\activate
+```
 
 * Installer Flask et autres dépendances :
-
-    pip install -r requirements.txt
-
+```
+pip install -r requirements.txt
+```
 
 ## Pour lancer le projet
 
 * Se placer dans le répertoire du projet
 
 * Activer l'environnement virtuel nouvellement créé :
-
-    venv\Scripts\activate
+```
+venv\Scripts\activate
+```
 
 * Lancer flask:
+```
+flask run
+```
 
-    flask run
-
-* Depuis un navigateur, se connecter à http://127.0.0.1:5000/
+* Depuis un navigateur, se connecter à (http://127.0.0.1:5000/)[http://127.0.0.1:5000/]

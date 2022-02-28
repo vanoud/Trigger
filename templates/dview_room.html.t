@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Trigger</title>
-    <style>
-        bluep{
-            background-color: blue;
-        }
-    </style>
 </head>
 <body>
 <h1>Bienvenu sur : {{ room.name }}</h1>
 
 
 <button type="button" id="load_older_messages_btn">Load Messages</button>
-<div id="messages" class="bluep">
+<div id="messages">
     {% for message in messages %}
         <div><b>{{ message.sender }}&nbsp;[{{ message.created_at }}]:&nbsp;</b> {{ message.text }}</div>
     {% endfor %}

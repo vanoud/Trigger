@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from bson.json_util import dumps
+# from bson.json_util import dumps
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_socketio import SocketIO, join_room, leave_room
@@ -170,4 +170,4 @@ def load_user(username):
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True,host="0.0.0.0",port=80)

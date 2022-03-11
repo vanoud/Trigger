@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime #import module date time pour daté les messages 
 
 # from bson.json_util import dumps
-from flask import Flask, render_template, request, redirect, url_for
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, request, redirect, url_for #import flask gestionaire de vue et de requete et de redirection
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user # module d'auth 
 from flask_socketio import SocketIO, join_room, leave_room
 from pymongo.errors import DuplicateKeyError
 

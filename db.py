@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from bson import ObjectId
-from pymongo import MongoClient, DESCENDING
+from pymongo import MongoClient, DESCENDING #import du client de connexion mongo pymongo pour gérer les requetes
 from werkzeug.security import generate_password_hash
 
 from user import User

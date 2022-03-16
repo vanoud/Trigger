@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fr">
 
@@ -14,7 +13,7 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/starter-template/">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
+
 
 
     <!-- Bootstrap core CSS -->
@@ -54,14 +53,15 @@
             content: "";
             background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23212529' viewBox='0 0 16 16'%3E%3Cpath d='M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z'/%3E%3C/svg%3E") no-repeat center center / 100% auto;
         }
-        .droite{
-            margin-left: 20% ;
+
+        .droite {
+            margin-left: 20%;
         }
     </style>
 
 
     <!-- Custom styles for this template -->
-    
+
 </head>
 
 <body>
@@ -69,7 +69,7 @@
     <div class="col-lg-8 mx-auto p-3 py-md-5">
         <br>
         <br>
-        <div class="container" >
+        <div class="container">
             <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
                 <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
                     <img src="../static/img/flame.svg" height="100px" width="100px" alt="">
@@ -77,52 +77,59 @@
                 </a>
                 <h2>Trigger</h2>
                 <div class="col-8 ">
-                    
+
                 </div>
                 <div class="col-4">
                     <a href="/logout" type="button" class="btn btn-danger">Deconnexion</a>
                 </div>
-                
+
             </header>
-        
-        
-                <header class="container">
-                    <h3>Bonjour <span style="color: rgb(59, 131, 224);">{% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Guest{% endif %}</span> !</h3>
-                   
-                </header>
+
+
+            <header class="container">
+                <h3>Bonjour <span style="color: rgb(59, 131, 224);">{% if current_user.is_authenticated %}{{
+                        current_user.username }}{% else %}Guest{% endif %}</span> !</h3>
+
+            </header>
         </div>
-            <br>
-                                
-            <br>
-            <br>
+        <br>
 
-            <div class="container">
+        <br>
+        <br>
+
+        <div class="container">
 
 
-                <div class="col-md-6">
-                    <h2>Channel de débats</h2>
-                    
-                    <br>
-                    
+            <div class="col-md-6">
+                <h2>Channel de débats</h2>
 
-                    {% if current_user.is_authenticated %}
+                <br>
+
+
+                {% if current_user.is_authenticated %}
 
                     {% for room in rooms %}
                     <ul class="icon-list">
                         <li><a href="/rooms/{{ room._id.room_id }}">{{ room.room_name }}</a></li>
                         <br>
-                        {% endfor %}
+                        <!-- {% if room.subject == 'politique' %}
+                        <ul class="icon-list">
+                            <li><a href="/rooms/{{ room._id.room_id }}">{{ room.room_name }}</a></li>
+                            <br>
+                        {% endif %}  -->
+
+                    {% endfor %}
                     </ul>
-                    
-                    
-                    {% endif %}
-                </div>
+
+
+                {% endif %}
             </div>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
         </main>
         <footer class="pt-5 my-5 text-muted border-top">

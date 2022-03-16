@@ -85,9 +85,9 @@ def create_room():
     if request.method == 'POST':
         room_name = request.form.get('room_name')
         usernames = [username.strip() for username in request.form.get('members').split(',')] #ici on recupére les nom d'user dans du formulaire de creation de rooms on strip pour les espaces 
-                                                                                              # et on parse avec une " , " pour recupérer un tableau des users  
+        subject = request.form.get('subject')                                                                                 # et on parse avec une " , " pour recupérer un tableau des users  
         if len(room_name) and len(usernames): # check conditionnel si true 
-            room_id = save_room(room_name, current_user.username)  # on stock dans une variable la methode de requetes de base 
+            room_id = save_room(room_name, current_user.username,subject,)  # on stock dans une variable la methode de requetes de base 
             
             if current_user.username in usernames: 
                 usernames.remove(current_user.username)

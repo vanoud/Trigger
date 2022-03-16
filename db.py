@@ -26,9 +26,9 @@ def get_user(username):
     return User(user_data['_id'], user_data['email'], user_data['password']) if user_data else None
 #   avec return user on appel la class User  du fichier user.py voir class et instance 
 
-def save_room(room_name, created_by):
+def save_room(room_name, created_by,subject):
     room_id = rooms_collection.insert_one(
-        {'name': room_name, 'created_by': created_by, 'created_at': datetime.now()}).inserted_id
+        {'name': room_name, 'created_by': created_by, 'created_at': datetime.now(),'subject': subject }).inserted_id
     add_room_member(room_id, room_name, created_by, created_by, is_room_admin=True)
     return room_id
 

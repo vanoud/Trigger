@@ -3,42 +3,51 @@ from datetime import datetime #import module date time pour daté les messages
 # from bson.json_util import dumps
 from flask import Flask, render_template, request, redirect, url_for #import flask gestionaire de vue et de requete et de redirection
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user # module d'auth 
-from flask_socketio import SocketIO, join_room, leave_room
-from pymongo.errors import DuplicateKeyError
-
+from flask_socketio import SocketIO, join_room, leave_room #gestionnaire de socket 
+from pymongo.errors import DuplicateKeyError #gestionaire d'erreur de requetes 
+# import du modele de la db 
 from db import get_user, save_user, save_room, add_room_members, get_rooms_for_user, get_room, is_room_member, \
     get_room_members, is_room_admin, update_room, remove_room_members, save_message, get_messages
 
 app = Flask(__name__)
-app.secret_key = "sfdjkafnk"
-socketio = SocketIO(app)
+app.secret_key = "sfdjkafnk" #clef pour la session user voir session et cookies
+socketio = SocketIO(app) 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
 
-
+#decorateur de route ( url ) 
 @app.route('/')
-def home():
+def home(): #methode du decotateur dans laquel on veriffie si un user est log on affiche les rooms 
+    rooms = []
+    if current_user.is_authenticated():
+        rooms = get_rooms_for_user(current_user.username)
+    return render_template("debats.html", rooms=rooms)
+
+
+@app.route('/debats/')
+def choice():
     rooms = []
     if current_user.is_authenticated():
         rooms = get_rooms_for_user(current_user.username)
     return render_template("index.html", rooms=rooms)
 
-
+#route sur laquel on verifie si le user est auth qui redirige vers la page debats en appelant la methode home plus haut
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
 
     message = ''
-    if request.method == 'POST':
+    if request.method == 'POST': #si on valide le formulaire voir submit form dans les vues login.html
         username = request.form.get('username')
         password_input = request.form.get('password')
         user = get_user(username)
-
+        # ici on recupére la requete mongodb via la methode get_user du modele  voir fonction get_user dans db.py
         if user and user.check_password(password_input):
             login_user(user)
             return redirect(url_for('home'))
+        #methode login_user de flask_login qui va check l'objet user et redirigé la methode home qui appel la methode home() route ("/") 
         else:
             message = 'Failed to login!'
     return render_template('login.html', message=message)
@@ -48,9 +57,9 @@ def login():
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-
+    #si user connecté on redirige vers la page d'index 
     message = ''
-    if request.method == 'POST':
+    if request.method == 'POST': # ici on recupére le formulaire si ok on try : avec la methode save user qui push en db 
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
@@ -58,7 +67,7 @@ def signup():
             save_user(username, email, password)
             return redirect(url_for('login'))
         except DuplicateKeyError:
-            message = "User already exists!"
+            message = "Cet utilisateur Existe déja !!"
     return render_template('signup.html', message=message)
 
 
@@ -68,23 +77,25 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-
+#route pour la creation de rooms 
 @app.route('/create-room/', methods=['GET', 'POST'])
-@login_required
+@login_required #methode qui verifie si auth 
 def create_room():
     message = ''
     if request.method == 'POST':
         room_name = request.form.get('room_name')
-        usernames = [username.strip() for username in request.form.get('members').split(',')]
-
-        if len(room_name) and len(usernames):
-            room_id = save_room(room_name, current_user.username)
-            if current_user.username in usernames:
+        usernames = [username.strip() for username in request.form.get('members').split(',')] #ici on recupére les nom d'user dans du formulaire de creation de rooms on strip pour les espaces 
+                                                                                              # et on parse avec une " , " pour recupérer un tableau des users  
+        if len(room_name) and len(usernames): # check conditionnel si true 
+            room_id = save_room(room_name, current_user.username)  # on stock dans une variable la methode de requetes de base 
+            
+            if current_user.username in usernames: 
                 usernames.remove(current_user.username)
             add_room_members(room_id, room_name, usernames, current_user.username)
-            return redirect(url_for('view_room', room_id=room_id))
+
+            return redirect(url_for('view_room', room_id=room_id)) 
         else:
-            message = "Failed to create room"
+            message = "Echec de creation de room"
     return render_template('create_room.html', message=message)
 
 
@@ -112,7 +123,7 @@ def edit_room(room_id):
             room_members_str = ",".join(new_members)
         return render_template('edit_room.html', room=room, room_members_str=room_members_str, message=message)
     else:
-        return "Room not found", 404
+        return "Channel introuvable !", 404
 
 
 @app.route('/rooms/<room_id>/')
@@ -125,7 +136,7 @@ def view_room(room_id):
         return render_template('view_room.html', username=current_user.username, room=room, room_members=room_members,
                                messages=messages)
     else:
-        return "Room not found", 404
+        return "Channel introuvable !", 404
 
 
 @app.route('/rooms/<room_id>/messages/')
@@ -137,12 +148,12 @@ def get_older_messages(room_id):
         messages = get_messages(room_id, page)
         return dumps(messages)
     else:
-        return "Room not found", 404
+        return "Channel introuvable !", 404
 
 
 @socketio.on('send_message')
 def handle_send_message_event(data):
-    app.logger.info("{} has sent message to the room {}: {}".format(data['username'],
+    app.logger.info("{} a envoyé un message au channel {}: {}".format(data['username'],
                                                                     data['room'],
                                                                     data['message']))
     data['created_at'] = datetime.now().strftime("%d %b, %H:%M")
@@ -152,14 +163,14 @@ def handle_send_message_event(data):
 
 @socketio.on('join_room')
 def handle_join_room_event(data):
-    app.logger.info("{} has joined the room {}".format(data['username'], data['room']))
+    app.logger.info("{} a rejoint le channel {}".format(data['username'], data['room']))
     join_room(data['room'])
     socketio.emit('join_room_announcement', data, room=data['room'])
 
 
 @socketio.on('leave_room')
 def handle_leave_room_event(data):
-    app.logger.info("{} has left the room {}".format(data['username'], data['room']))
+    app.logger.info("{} a quitté le channel{}".format(data['username'], data['room']))
     leave_room(data['room'])
     socketio.emit('leave_room_announcement', data, room=data['room'])
 
